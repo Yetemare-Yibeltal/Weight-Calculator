@@ -1,0 +1,19 @@
+body{
+    background-color: coral;
+    text-align: center;
+}
+.div{
+    padding-top:1%;
+    
+}
+input{
+    padding:10px;
+    border-radius: 8px;
+}
+button{
+    padding:10px;
+    border-radius: 8px;
+}
+h1{
+    padding-top:10%;
+}
