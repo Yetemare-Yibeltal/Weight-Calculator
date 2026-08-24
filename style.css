@@ -387,6 +387,7 @@ select option {
 }
 
 /* ---------- buttons ---------- */
+/* ---------- buttons ---------- */
 button {
   width: 100%;
   padding: 0.9rem;
@@ -399,6 +400,11 @@ button {
   margin-top: 0.5rem;
   letter-spacing: 0.5px;
 }
+
+button:active {
+  transform: scale(0.96);
+}
+
 
 .btn-primary {
   background: linear-gradient(135deg, #fc5c7d, #f0c27f);
@@ -624,4 +630,7 @@ footer {
   font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.15);
   margin-top: 0.3rem;
+}
+button:active {
+  transform: scale(0.96);
 }
