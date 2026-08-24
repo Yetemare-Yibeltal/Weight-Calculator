@@ -28,9 +28,8 @@ let unitChart = null;
 // -------------------- Helper: format numbers neatly --------------------
 function formatNumber(num) {
   if (num === 0) return "0";
-  if (Math.abs(num) > 1e15) return num.toExponential(4); // scientific for huge numbers
+  if (Math.abs(num) > 1e15) return num.toExponential(4);
   if (Number.isInteger(num) && Math.abs(num) < 1e15) return num.toString();
-  // round to 4 decimals, but remove trailing zeros
   const fixed = num.toFixed(4);
   return parseFloat(fixed).toString();
 }
@@ -92,7 +91,6 @@ function updateStats(history) {
   const total = history.length;
   totalConvEl.textContent = total;
 
-  // Most used "from" unit
   const unitCount = {};
   history.forEach((item) => {
     unitCount[item.fromUnit] = (unitCount[item.fromUnit] || 0) + 1;
@@ -107,23 +105,18 @@ function updateStats(history) {
   }
   mostUsedEl.textContent = mostUsed;
 
-  // Average weight (convert all to kg first)
   let totalKg = 0;
   history.forEach((item) => {
-    const kg = item.weight / rates[item.fromUnit];
-    totalKg += kg;
+    totalKg += item.weight / rates[item.fromUnit];
   });
   const avg = totalKg / total;
   avgWeightEl.textContent = formatNumber(avg);
 }
 
-// -------------------- Chart rendering --------------------
+// -------------------- Chart rendering (DOUGHNUT) --------------------
 function renderChart(history) {
   const ctx = document.getElementById("unitChart");
-  if (!ctx) {
-    console.warn("Chart canvas not found");
-    return;
-  }
+  if (!ctx) return;
 
   const unitCount = {};
   if (history && history.length > 0) {
@@ -141,10 +134,7 @@ function renderChart(history) {
     unitChart = null;
   }
 
-  if (data.length === 0) {
-    // show a message or empty state
-    return;
-  }
+  if (data.length === 0) return;
 
   unitChart = new Chart(ctx, {
     type: "doughnut",
@@ -156,6 +146,7 @@ function renderChart(history) {
           backgroundColor: colors.slice(0, data.length),
           borderColor: "rgba(255,255,255,0.1)",
           borderWidth: 2,
+          hoverOffset: 12,
         },
       ],
     },
@@ -167,21 +158,25 @@ function renderChart(history) {
           position: "bottom",
           labels: {
             color: "rgba(255,255,255,0.7)",
-            font: { size: 12 },
-            padding: 12,
+            font: { weight: "600", size: 12 },
+            padding: 16,
           },
         },
         tooltip: {
           callbacks: {
             label: function (context) {
-              let label = context.label || "";
-              let value = context.parsed || 0;
-              return label + ": " + value;
+              const total = context.dataset.data.reduce((a, b) => a + b, 0);
+              const percentage = ((context.parsed / total) * 100).toFixed(1);
+              return `${context.label}: ${context.parsed} (${percentage}%)`;
             },
           },
         },
       },
-      cutout: "60%",
+      cutout: "70%",
+      animation: {
+        animateRotate: true,
+        duration: 800,
+      },
     },
   });
 }
@@ -227,19 +222,17 @@ async function convert() {
   const inKg = weight / rates[from];
   const result = inKg * rates[to];
 
-  // Format the result for display
   const formattedResult = formatNumber(result);
   const display = `${weight} ${from} = ${formattedResult} ${to}`;
   resultDisplay.textContent = display;
   resultDisplay.className = `result show ${to}`;
 
   try {
-    // Save the raw result (not formatted) to keep precision
     await saveConversion({
       weight: weight,
       fromUnit: from,
       toUnit: to,
-      result: result, // raw number
+      result: result,
     });
     await loadHistory();
   } catch (err) {
@@ -283,7 +276,6 @@ document.addEventListener("DOMContentLoaded", function () {
     if (e.key === "Enter") convert();
   });
 
-  // Preset buttons
   document.querySelectorAll(".preset-btn").forEach((btn) => {
     btn.addEventListener("click", function () {
       const weight = this.dataset.weight;
