@@ -5,6 +5,7 @@ const db = require("./database");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Middleware
 app.use(express.json());
 app.use(express.static(path.join(__dirname, ".")));
 
@@ -72,12 +73,13 @@ app.delete("/api/conversions", async (req, res) => {
   }
 });
 
-// --- CATCH‑ALL: serve index.html for unmatched routes ---
-// Use "/*" instead of "*" to work with newer Express versions.
-app.get("/*", (req, res) => {
+// --- CATCH‑ALL: serve index.html for any unmatched routes ---
+// This must come AFTER all API routes.
+app.use((req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
+// Start server
 app.listen(PORT, () => {
   console.log(`⚖️  Weight Lab server running at http://localhost:${PORT}`);
 });
