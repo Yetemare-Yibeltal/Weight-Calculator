@@ -496,7 +496,9 @@ button:active {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 0.8rem;
+  align-items: stretch;
 }
+
 
 .stat-item {
   text-align: center;
