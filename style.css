@@ -104,18 +104,13 @@ header h1 {
   text-transform: uppercase;
 }
 
-/* ---------- dashboard grid ---------- */
+/* ---------- dashboard - SINGLE COLUMN ---------- */
 .dashboard {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 2rem;
-}
-
-@media (max-width: 768px) {
-  .dashboard {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
+  max-width: 700px;
+  margin: 0 auto;
 }
 
 /* ---------- glass cards ---------- */
