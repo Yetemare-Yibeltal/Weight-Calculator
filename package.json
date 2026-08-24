@@ -1,0 +1,27 @@
+{
+  "name": "weight-calculator",
+  "version": "1.0.0",
+  "description": "A clean, responsive weight‑conversion tool built with vanilla HTML, CSS, and JavaScript.  \r Convert between kilograms, grams, pounds, ounces, and stones.  \r Includes a conversion history and a modern dark glassmorphism UI.",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yetemare-Yibeltal/Weight-Calculator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Yetemare-Yibeltal/Weight-Calculator/issues"
+  },
+  "homepage": "https://github.com/Yetemare-Yibeltal/Weight-Calculator#readme",
+  "dependencies": {
+    "express": "^5.2.1",
+    "sqlite3": "^6.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
