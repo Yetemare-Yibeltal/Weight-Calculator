@@ -141,19 +141,21 @@ function renderChart(history) {
     unitChart = null;
   }
 
-  if (data.length === 0) return;
+  if (data.length === 0) {
+    // show a message or empty state
+    return;
+  }
 
   unitChart = new Chart(ctx, {
-    type: "bar",
+    type: "doughnut",
     data: {
       labels: labels,
       datasets: [
         {
-          label: "Conversions",
           data: data,
           backgroundColor: colors.slice(0, data.length),
-          borderRadius: 6,
-          barPercentage: 0.6,
+          borderColor: "rgba(255,255,255,0.1)",
+          borderWidth: 2,
         },
       ],
     },
@@ -161,19 +163,25 @@ function renderChart(history) {
       responsive: true,
       maintainAspectRatio: true,
       plugins: {
-        legend: { display: false },
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: { color: "rgba(255,255,255,0.5)" },
-          grid: { color: "rgba(255,255,255,0.05)" },
+        legend: {
+          position: "bottom",
+          labels: {
+            color: "rgba(255,255,255,0.7)",
+            font: { size: 12 },
+            padding: 12,
+          },
         },
-        x: {
-          ticks: { color: "rgba(255,255,255,0.5)" },
-          grid: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function (context) {
+              let label = context.label || "";
+              let value = context.parsed || 0;
+              return label + ": " + value;
+            },
+          },
         },
       },
+      cutout: "60%",
     },
   });
 }
