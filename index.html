@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weight Calculator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>⚖️ Weight Calculator</h1>
+    <div class="card">
+      <div class="input-group">
+        <label for="weight">Weight</label>
+        <input type="number" id="weight" placeholder="Enter value" step="any" />
+      </div>
+      <div class="input-group">
+        <label for="from-unit">From</label>
+        <select id="from-unit">
+          <option value="kg">Kilograms</option>
+          <option value="g">Grams</option>
+          <option value="lbs">Pounds</option>
+          <option value="oz">Ounces</option>
+          <option value="stones">Stones</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label for="to-unit">To</label>
+        <select id="to-unit">
+          <option value="kg">Kilograms</option>
+          <option value="g">Grams</option>
+          <option value="lbs" selected>Pounds</option>
+          <option value="oz">Ounces</option>
+          <option value="stones">Stones</option>
+        </select>
+      </div>
+      <button id="convert-btn">Convert</button>
+      <div id="result" class="result"></div>
+      <button id="reset-btn" class="secondary">Reset</button>
+    </div>
+
+    <div class="history-card">
+      <div class="history-header">
+        <h2>📋 History</h2>
+        <button id="clear-history-btn" class="danger">Clear</button>
+      </div>
+      <ul id="history-list"></ul>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
