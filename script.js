@@ -114,7 +114,6 @@ function renderChart(history) {
     return;
   }
 
-  // Count conversions per "from" unit
   const unitCount = {};
   if (history && history.length > 0) {
     history.forEach((item) => {
@@ -126,17 +125,12 @@ function renderChart(history) {
   const data = Object.values(unitCount);
   const colors = ["#f43f5e", "#facc15", "#3b82f6", "#8b5cf6", "#22d3ee"];
 
-  // Destroy existing chart if any
   if (unitChart) {
     unitChart.destroy();
     unitChart = null;
   }
 
-  // If no data, show a message or just clear
-  if (data.length === 0) {
-    // Optionally draw a no-data message on canvas? We'll just leave it blank.
-    return;
-  }
+  if (data.length === 0) return;
 
   unitChart = new Chart(ctx, {
     type: "bar",
@@ -260,7 +254,6 @@ async function clearHistory() {
 document.addEventListener("DOMContentLoaded", function () {
   console.log("✅ DOM ready – attaching events");
 
-  // Converter events
   convertBtn.addEventListener("click", convert);
   resetBtn.addEventListener("click", resetForm);
   clearHistoryBtn.addEventListener("click", clearHistory);
@@ -278,10 +271,9 @@ document.addEventListener("DOMContentLoaded", function () {
       weightInput.value = weight;
       fromUnit.value = from;
       toUnit.value = to;
-      convert(); // trigger conversion
+      convert();
     });
   });
 
-  // Load initial data
   loadHistory();
 });
