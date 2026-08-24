@@ -25,6 +25,16 @@ const avgWeightEl = document.getElementById("avg-weight");
 // Chart instance
 let unitChart = null;
 
+// -------------------- Helper: format numbers neatly --------------------
+function formatNumber(num) {
+  if (num === 0) return "0";
+  if (Math.abs(num) > 1e15) return num.toExponential(4); // scientific for huge numbers
+  if (Number.isInteger(num) && Math.abs(num) < 1e15) return num.toString();
+  // round to 4 decimals, but remove trailing zeros
+  const fixed = num.toFixed(4);
+  return parseFloat(fixed).toString();
+}
+
 // -------------------- API helpers --------------------
 async function fetchConversions() {
   const res = await fetch("/api/conversions");
@@ -64,7 +74,8 @@ function renderHistory(history) {
       hour: "2-digit",
       minute: "2-digit",
     });
-    li.innerHTML = `<span>${entry.weight} ${entry.fromUnit} → ${entry.result} ${entry.toUnit}</span><span>${timestamp}</span>`;
+    const formattedResult = formatNumber(entry.result);
+    li.innerHTML = `<span>${entry.weight} ${entry.fromUnit} → ${formattedResult} ${entry.toUnit}</span><span>${timestamp}</span>`;
     historyList.appendChild(li);
   });
 }
@@ -103,7 +114,7 @@ function updateStats(history) {
     totalKg += kg;
   });
   const avg = totalKg / total;
-  avgWeightEl.textContent = avg.toFixed(2);
+  avgWeightEl.textContent = formatNumber(avg);
 }
 
 // -------------------- Chart rendering --------------------
@@ -123,7 +134,7 @@ function renderChart(history) {
 
   const labels = Object.keys(unitCount).map((u) => u.toUpperCase());
   const data = Object.values(unitCount);
-  const colors = ["#f43f5e", "#facc15", "#3b82f6", "#8b5cf6", "#22d3ee"];
+  const colors = ["#f87171", "#fbbf24", "#60a5fa", "#a78bfa", "#34d399"];
 
   if (unitChart) {
     unitChart.destroy();
@@ -208,17 +219,19 @@ async function convert() {
   const inKg = weight / rates[from];
   const result = inKg * rates[to];
 
-  const formattedResult = Number.isInteger(result) ? result : result.toFixed(4);
+  // Format the result for display
+  const formattedResult = formatNumber(result);
   const display = `${weight} ${from} = ${formattedResult} ${to}`;
   resultDisplay.textContent = display;
   resultDisplay.className = `result show ${to}`;
 
   try {
+    // Save the raw result (not formatted) to keep precision
     await saveConversion({
       weight: weight,
       fromUnit: from,
       toUnit: to,
-      result: parseFloat(formattedResult),
+      result: result, // raw number
     });
     await loadHistory();
   } catch (err) {
