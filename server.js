@@ -5,13 +5,26 @@ const db = require("./database");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "."))); // Serve static files
+app.use(express.static(path.join(__dirname, ".")));
+
+// --- HEALTH CHECK ---
+app.get("/api/health", async (req, res) => {
+  try {
+    await db.getConversions();
+    res.json({
+      status: "ok",
+      database: "connected",
+      timestamp: new Date().toISOString(),
+    });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ status: "error", database: "disconnected", error: err.message });
+  }
+});
 
 // --- API ROUTES ---
-
-// GET all conversions
 app.get("/api/conversions", async (req, res) => {
   try {
     const rows = await db.getConversions();
@@ -21,7 +34,6 @@ app.get("/api/conversions", async (req, res) => {
   }
 });
 
-// POST a new conversion
 app.post("/api/conversions", async (req, res) => {
   const { weight, fromUnit, toUnit, result } = req.body;
   if (weight == null || !fromUnit || !toUnit || result == null) {
@@ -40,7 +52,6 @@ app.post("/api/conversions", async (req, res) => {
   }
 });
 
-// DELETE a single conversion
 app.delete("/api/conversions/:id", async (req, res) => {
   const id = parseInt(req.params.id);
   if (isNaN(id)) return res.status(400).json({ error: "Invalid ID" });
@@ -52,7 +63,6 @@ app.delete("/api/conversions/:id", async (req, res) => {
   }
 });
 
-// DELETE all conversions (Clear history)
 app.delete("/api/conversions", async (req, res) => {
   try {
     await db.deleteAllConversions();
@@ -62,13 +72,12 @@ app.delete("/api/conversions", async (req, res) => {
   }
 });
 
-// --- CATCH‑ALL: serve index.html for any unmatched routes ---
-// This ensures deep links and refreshes work correctly.
-app.get("*", (req, res) => {
+// --- CATCH‑ALL: serve index.html for unmatched routes ---
+// Use "/*" instead of "*" to work with newer Express versions.
+app.get("/*", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
-// Start server
 app.listen(PORT, () => {
   console.log(`⚖️  Weight Lab server running at http://localhost:${PORT}`);
 });
