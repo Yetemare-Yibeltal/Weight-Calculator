@@ -17,18 +17,31 @@ const resultDisplay = document.getElementById("result");
 const historyList = document.getElementById("history-list");
 const clearHistoryBtn = document.getElementById("clear-history-btn");
 
-// -------------------- history management --------------------
-function loadHistory() {
-  const stored = localStorage.getItem("weightHistory");
-  return stored ? JSON.parse(stored) : [];
+// -------------------- API helpers --------------------
+async function fetchConversions() {
+  const res = await fetch("/api/conversions");
+  if (!res.ok) throw new Error("Failed to fetch");
+  return res.json();
 }
 
-function saveHistory(history) {
-  localStorage.setItem("weightHistory", JSON.stringify(history));
+async function saveConversion(data) {
+  const res = await fetch("/api/conversions", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error("Failed to save");
+  return res.json();
 }
 
-function renderHistory() {
-  const history = loadHistory();
+async function clearAllConversions() {
+  const res = await fetch("/api/conversions", { method: "DELETE" });
+  if (!res.ok) throw new Error("Failed to clear");
+  return res.json();
+}
+
+// -------------------- History rendering --------------------
+function renderHistory(history) {
   historyList.innerHTML = "";
   if (history.length === 0) {
     const empty = document.createElement("li");
@@ -37,39 +50,28 @@ function renderHistory() {
     historyList.appendChild(empty);
     return;
   }
-  // show latest first
-  history
-    .slice()
-    .reverse()
-    .forEach((entry) => {
-      const li = document.createElement("li");
-      li.innerHTML = `<span>${entry.fromVal} ${entry.fromUnit} → ${entry.toVal} ${entry.toUnit}</span><span>${entry.timestamp}</span>`;
-      historyList.appendChild(li);
+  history.forEach((entry) => {
+    const li = document.createElement("li");
+    const timestamp = new Date(entry.timestamp).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
     });
-}
-
-function addHistoryEntry(fromVal, fromUnit, toVal, toUnit) {
-  const history = loadHistory();
-  const timestamp = new Date().toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
+    li.innerHTML = `<span>${entry.weight} ${entry.fromUnit} → ${entry.result} ${entry.toUnit}</span><span>${timestamp}</span>`;
+    historyList.appendChild(li);
   });
-  history.push({ fromVal, fromUnit, toVal, toUnit, timestamp });
-  // keep last 20 entries to avoid bloating
-  if (history.length > 20) history.shift();
-  saveHistory(history);
-  renderHistory();
 }
 
-function clearHistory() {
-  if (confirm("Clear all conversion history?")) {
-    saveHistory([]);
-    renderHistory();
+async function loadHistory() {
+  try {
+    const data = await fetchConversions();
+    renderHistory(data);
+  } catch (err) {
+    console.error("Error loading history:", err);
   }
 }
 
-// -------------------- conversion logic --------------------
-function convert() {
+// -------------------- Conversion logic --------------------
+async function convert() {
   const rawWeight = weightInput.value.trim();
   if (rawWeight === "") {
     resultDisplay.textContent = "Please enter a weight";
@@ -93,16 +95,27 @@ function convert() {
   const inKg = weight / rates[from];
   const result = inKg * rates[to];
 
-  // format result: if integer, show as integer, else 4 decimals
   const formattedResult = Number.isInteger(result) ? result : result.toFixed(4);
   const display = `${weight} ${from} = ${formattedResult} ${to}`;
   resultDisplay.textContent = display;
 
-  // save to history
-  addHistoryEntry(weight, from, formattedResult, to);
+  // --- Save to backend instead of localStorage ---
+  try {
+    await saveConversion({
+      weight: weight,
+      fromUnit: from,
+      toUnit: to,
+      result: parseFloat(formattedResult),
+    });
+    // Reload history to show the new entry
+    await loadHistory();
+  } catch (err) {
+    console.error("Error saving conversion:", err);
+    alert("Could not save conversion. Please try again.");
+  }
 }
 
-// -------------------- reset form --------------------
+// -------------------- Reset form --------------------
 function resetForm() {
   weightInput.value = "";
   fromUnit.value = "kg";
@@ -111,15 +124,27 @@ function resetForm() {
   weightInput.focus();
 }
 
-// -------------------- event listeners --------------------
+// -------------------- Clear history --------------------
+async function clearHistory() {
+  if (confirm("Clear all conversion history?")) {
+    try {
+      await clearAllConversions();
+      await loadHistory();
+    } catch (err) {
+      console.error("Error clearing history:", err);
+      alert("Could not clear history.");
+    }
+  }
+}
+
+// -------------------- Event listeners --------------------
 convertBtn.addEventListener("click", convert);
 resetBtn.addEventListener("click", resetForm);
 clearHistoryBtn.addEventListener("click", clearHistory);
 
-// allow Enter key on weight input
 weightInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") convert();
 });
 
-// initial render
-renderHistory();
+// Initial load
+loadHistory();
