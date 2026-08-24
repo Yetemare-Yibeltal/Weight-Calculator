@@ -3,81 +3,202 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Weight Lab · Fullstack</title>
+  <title>Weight Lab · Fullstack Portfolio</title>
   <link rel="stylesheet" href="style.css" />
+  <!-- Chart.js for the chart -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <!-- Animated background overlay -->
+
+  <!-- ========== ANIMATED BACKGROUND ========== -->
   <div class="bg-animation"></div>
 
-  <div class="app-wrapper">
-    <!-- Header -->
-    <header>
-      <h1>⚖️ Weight Lab</h1>
-      <p class="subtitle">Convert · Track · Analyse</p>
-    </header>
+  <!-- ========== NAVIGATION ========== -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <span class="logo">⚖️ Weight Lab</span>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#calculator">Calculator</a></li>
+        <li><a href="#stats">Stats</a></li>
+        <li><a href="#history">History</a></li>
+      </ul>
+    </div>
+  </nav>
 
-    <!-- Main Content - Vertical Stack -->
-    <main class="dashboard">
-      <!-- Converter Card -->
-      <section class="card converter-card">
-        <div class="card-header">
-          <span class="card-icon">🔄</span>
-          <h2>Converter</h2>
-        </div>
+  <!-- ========== HERO SECTION ========== -->
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <h1>Convert, Track, Analyze</h1>
+      <p class="hero-sub">
+        A full‑stack weight conversion tool with live analytics, history, and beautiful visuals.
+        Built with Node.js, Express, SQLite, and vanilla frontend.
+      </p>
+      <a href="#calculator" class="btn-primary hero-btn">Try the Converter ↓</a>
+    </div>
+  </section>
 
-        <div class="input-group">
-          <label for="weight">Weight</label>
-          <input type="number" id="weight" placeholder="0.00" step="any" />
-        </div>
+  <!-- ========== FEATURES SECTION ========== -->
+  <section class="features" id="features">
+    <h2>Why Weight Lab?</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <span class="feature-icon">⚡</span>
+        <h3>Instant Conversion</h3>
+        <p>Real‑time results with a clean, responsive interface – no page reloads.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📊</span>
+        <h3>Analytics Dashboard</h3>
+        <p>See your most used units, total conversions, and a bar chart of activity.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🗄️</span>
+        <h3>Persistent History</h3>
+        <p>All conversions are saved in a SQLite database – your data stays across sessions.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🎨</span>
+        <h3>Modern UI/UX</h3>
+        <p>Glassmorphism, animated gradients, and smooth micro‑interactions for a premium feel.</p>
+      </div>
+    </div>
+  </section>
 
-        <div class="row">
-          <div class="input-group">
-            <label for="from-unit">From</label>
-            <select id="from-unit">
-              <option value="kg">⚖️ Kilograms</option>
-              <option value="g">📦 Grams</option>
-              <option value="lbs">🏋️ Pounds</option>
-              <option value="oz">⚡ Ounces</option>
-              <option value="stones">🪨 Stones</option>
-            </select>
+  <!-- ========== HOW IT WORKS ========== -->
+  <section class="how-it-works">
+    <h2>How It Works</h2>
+    <div class="steps">
+      <div class="step">
+        <span class="step-number">1</span>
+        <p>Enter a weight and choose your units.</p>
+      </div>
+      <div class="step">
+        <span class="step-number">2</span>
+        <p>Click “Convert” or press Enter – get your result instantly.</p>
+      </div>
+      <div class="step">
+        <span class="step-number">3</span>
+        <p>Every conversion is saved to the database and shown in your history.</p>
+      </div>
+      <div class="step">
+        <span class="step-number">4</span>
+        <p>Explore your stats and chart to understand your usage patterns.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== MAIN DASHBOARD (Calculator, Stats, Chart, History) ========== -->
+  <section class="dashboard-section" id="calculator">
+    <div class="dashboard-container">
+
+      <!-- LEFT COLUMN: Converter + History -->
+      <div class="main-column">
+        <!-- Converter Card -->
+        <div class="card converter-card">
+          <div class="card-header">
+            <span class="card-icon">🔄</span>
+            <h2>Converter</h2>
           </div>
+
           <div class="input-group">
-            <label for="to-unit">To</label>
-            <select id="to-unit">
-              <option value="kg">⚖️ Kilograms</option>
-              <option value="g">📦 Grams</option>
-              <option value="lbs" selected>🏋️ Pounds</option>
-              <option value="oz">⚡ Ounces</option>
-              <option value="stones">🪨 Stones</option>
-            </select>
+            <label for="weight">Weight</label>
+            <input type="number" id="weight" placeholder="0.00" step="any" />
+          </div>
+
+          <div class="row">
+            <div class="input-group">
+              <label for="from-unit">From</label>
+              <select id="from-unit">
+                <option value="kg">⚖️ Kilograms</option>
+                <option value="g">📦 Grams</option>
+                <option value="lbs">🏋️ Pounds</option>
+                <option value="oz">⚡ Ounces</option>
+                <option value="stones">🪨 Stones</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label for="to-unit">To</label>
+              <select id="to-unit">
+                <option value="kg">⚖️ Kilograms</option>
+                <option value="g">📦 Grams</option>
+                <option value="lbs" selected>🏋️ Pounds</option>
+                <option value="oz">⚡ Ounces</option>
+                <option value="stones">🪨 Stones</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Quick Presets -->
+          <div class="presets">
+            <span class="preset-label">⚡ Quick:</span>
+            <button class="preset-btn" data-weight="1" data-from="kg" data-to="lbs">1 kg → lbs</button>
+            <button class="preset-btn" data-weight="10" data-from="lbs" data-to="kg">10 lbs → kg</button>
+            <button class="preset-btn" data-weight="5" data-from="kg" data-to="stones">5 kg → stones</button>
+            <button class="preset-btn" data-weight="100" data-from="g" data-to="oz">100 g → oz</button>
+          </div>
+
+          <button id="convert-btn" class="btn-primary">Convert</button>
+          <button id="reset-btn" class="btn-secondary">↺ Reset</button>
+
+          <div id="result" class="result"></div>
+        </div>
+
+        <!-- History Card -->
+        <div class="card history-card" id="history">
+          <div class="card-header">
+            <span class="card-icon">📋</span>
+            <h2>History</h2>
+            <button id="clear-history-btn" class="btn-danger">Clear All</button>
+          </div>
+          <ul id="history-list" class="history-list">
+            <li class="empty-history">No conversions yet</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: Stats + Chart -->
+      <div class="side-column" id="stats">
+        <!-- Stats Card -->
+        <div class="card stats-card">
+          <div class="card-header">
+            <span class="card-icon">📊</span>
+            <h2>Statistics</h2>
+          </div>
+          <div id="stats-grid" class="stats-grid">
+            <div class="stat-item">
+              <span class="stat-value" id="total-conversions">0</span>
+              <span class="stat-label">Total Conversions</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value" id="most-used-unit">—</span>
+              <span class="stat-label">Most Used Unit</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value" id="avg-weight">0</span>
+              <span class="stat-label">Avg Weight (kg)</span>
+            </div>
           </div>
         </div>
 
-        <button id="convert-btn" class="btn-primary">Convert</button>
-        <button id="reset-btn" class="btn-secondary">↺ Reset</button>
-
-        <div id="result" class="result"></div>
-      </section>
-
-      <!-- History Card -->
-      <section class="card history-card">
-        <div class="card-header">
-          <span class="card-icon">📋</span>
-          <h2>History</h2>
-          <button id="clear-history-btn" class="btn-danger">Clear All</button>
+        <!-- Chart Card -->
+        <div class="card chart-card">
+          <div class="card-header">
+            <span class="card-icon">📈</span>
+            <h2>Conversion Frequency</h2>
+          </div>
+          <canvas id="unitChart" width="400" height="200"></canvas>
         </div>
-        <ul id="history-list" class="history-list">
-          <li class="empty-history">No conversions yet</li>
-        </ul>
-      </section>
-    </main>
+      </div>
 
-    <!-- Footer -->
-    <footer>
-      <p>Built with ❤️ · Fullstack Weight Lab</p>
-    </footer>
-  </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer>
+    <p>Built with ❤️ · Fullstack Weight Lab</p>
+    <p class="footer-tech">Node.js · Express · SQLite · Vanilla JS</p>
+  </footer>
 
   <script src="script.js"></script>
 </body>
