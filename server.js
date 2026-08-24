@@ -85,3 +85,10 @@ app.use((req, res) => {
 app.listen(PORT, () => {
   console.log(`⚖️  Weight Lab server running on port ${PORT}`);
 });
+// This one line serves ALL your frontend files
+app.use(express.static(path.join(__dirname)));
+
+// This serves index.html for ANY route not matched above
+app.use((req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
