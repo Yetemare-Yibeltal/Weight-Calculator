@@ -5,9 +5,8 @@ const db = require("./database");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
+// Middleware - serve static files from the current directory
 app.use(express.json());
-app.use(express.static(path.join(__dirname, ".")));
 
 // --- HEALTH CHECK ---
 app.get("/api/health", async (req, res) => {
@@ -73,13 +72,15 @@ app.delete("/api/conversions", async (req, res) => {
   }
 });
 
-// --- CATCH‑ALL: serve index.html for any unmatched routes ---
-// This must come AFTER all API routes.
-app.use((req, res) => {
+// --- SERVE STATIC FILES ---
+// This must come AFTER API routes but BEFORE the catch-all
+app.use(express.static(path.join(__dirname)));
+
+// --- CATCH-ALL: serve index.html ---
+app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
-// Start server
 app.listen(PORT, () => {
-  console.log(`⚖️  Weight Lab server running at http://localhost:${PORT}`);
+  console.log(`⚖️  Weight Lab server running on port ${PORT}`);
 });
