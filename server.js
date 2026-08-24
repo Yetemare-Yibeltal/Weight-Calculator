@@ -1,4 +1,3 @@
-// server.js
 const express = require("express");
 const path = require("path");
 const db = require("./database");
@@ -8,7 +7,7 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "."))); // Serve files from current folder
+app.use(express.static(path.join(__dirname, "."))); // Serve static files
 
 // --- API ROUTES ---
 
@@ -61,6 +60,12 @@ app.delete("/api/conversions", async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});
+
+// --- CATCH‑ALL: serve index.html for any unmatched routes ---
+// This ensures deep links and refreshes work correctly.
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
 // Start server
