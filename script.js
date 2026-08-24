@@ -17,6 +17,14 @@ const resultDisplay = document.getElementById("result");
 const historyList = document.getElementById("history-list");
 const clearHistoryBtn = document.getElementById("clear-history-btn");
 
+// Stats DOM
+const totalConvEl = document.getElementById("total-conversions");
+const mostUsedEl = document.getElementById("most-used-unit");
+const avgWeightEl = document.getElementById("avg-weight");
+
+// Chart instance
+let unitChart = null;
+
 // -------------------- API helpers --------------------
 async function fetchConversions() {
   const res = await fetch("/api/conversions");
@@ -43,7 +51,7 @@ async function clearAllConversions() {
 // -------------------- History rendering --------------------
 function renderHistory(history) {
   historyList.innerHTML = "";
-  if (history.length === 0) {
+  if (!history || history.length === 0) {
     const empty = document.createElement("li");
     empty.className = "empty-history";
     empty.textContent = "No conversions yet";
@@ -61,18 +69,125 @@ function renderHistory(history) {
   });
 }
 
+// -------------------- Stats computation --------------------
+function updateStats(history) {
+  if (!history || history.length === 0) {
+    totalConvEl.textContent = "0";
+    mostUsedEl.textContent = "—";
+    avgWeightEl.textContent = "0";
+    return;
+  }
+
+  const total = history.length;
+  totalConvEl.textContent = total;
+
+  // Most used "from" unit
+  const unitCount = {};
+  history.forEach((item) => {
+    unitCount[item.fromUnit] = (unitCount[item.fromUnit] || 0) + 1;
+  });
+  let maxCount = 0;
+  let mostUsed = "—";
+  for (const [unit, count] of Object.entries(unitCount)) {
+    if (count > maxCount) {
+      maxCount = count;
+      mostUsed = unit.toUpperCase();
+    }
+  }
+  mostUsedEl.textContent = mostUsed;
+
+  // Average weight (convert all to kg first)
+  let totalKg = 0;
+  history.forEach((item) => {
+    const kg = item.weight / rates[item.fromUnit];
+    totalKg += kg;
+  });
+  const avg = totalKg / total;
+  avgWeightEl.textContent = avg.toFixed(2);
+}
+
+// -------------------- Chart rendering --------------------
+function renderChart(history) {
+  const ctx = document.getElementById("unitChart");
+  if (!ctx) {
+    console.warn("Chart canvas not found");
+    return;
+  }
+
+  // Count conversions per "from" unit
+  const unitCount = {};
+  if (history && history.length > 0) {
+    history.forEach((item) => {
+      unitCount[item.fromUnit] = (unitCount[item.fromUnit] || 0) + 1;
+    });
+  }
+
+  const labels = Object.keys(unitCount).map((u) => u.toUpperCase());
+  const data = Object.values(unitCount);
+  const colors = ["#f43f5e", "#facc15", "#3b82f6", "#8b5cf6", "#22d3ee"];
+
+  // Destroy existing chart if any
+  if (unitChart) {
+    unitChart.destroy();
+    unitChart = null;
+  }
+
+  // If no data, show a message or just clear
+  if (data.length === 0) {
+    // Optionally draw a no-data message on canvas? We'll just leave it blank.
+    return;
+  }
+
+  unitChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Conversions",
+          data: data,
+          backgroundColor: colors.slice(0, data.length),
+          borderRadius: 6,
+          barPercentage: 0.6,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {
+        legend: { display: false },
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: { color: "rgba(255,255,255,0.5)" },
+          grid: { color: "rgba(255,255,255,0.05)" },
+        },
+        x: {
+          ticks: { color: "rgba(255,255,255,0.5)" },
+          grid: { display: false },
+        },
+      },
+    },
+  });
+}
+
+// -------------------- Load all data --------------------
 async function loadHistory() {
   try {
     const data = await fetchConversions();
     renderHistory(data);
+    updateStats(data);
+    renderChart(data);
   } catch (err) {
     console.error("Error loading history:", err);
   }
 }
 
-// -------------------- Conversion logic (with animation) --------------------
+// -------------------- Conversion logic --------------------
 async function convert() {
-  console.log("🔄 Convert button clicked!"); // Debug line
+  console.log("🔄 Convert button clicked!");
 
   const rawWeight = weightInput.value.trim();
   if (rawWeight === "") {
@@ -96,16 +211,14 @@ async function convert() {
     return;
   }
 
-  // convert to kg first, then to target
   const inKg = weight / rates[from];
   const result = inKg * rates[to];
 
   const formattedResult = Number.isInteger(result) ? result : result.toFixed(4);
   const display = `${weight} ${from} = ${formattedResult} ${to}`;
   resultDisplay.textContent = display;
-  resultDisplay.className = `result show ${to}`; // dynamic unit colour
+  resultDisplay.className = `result show ${to}`;
 
-  // --- Save to backend ---
   try {
     await saveConversion({
       weight: weight,
@@ -113,7 +226,7 @@ async function convert() {
       toUnit: to,
       result: parseFloat(formattedResult),
     });
-    await loadHistory(); // refresh the list
+    await loadHistory();
   } catch (err) {
     console.error("Error saving conversion:", err);
     alert("Could not save conversion. Please try again.");
@@ -143,9 +256,11 @@ async function clearHistory() {
   }
 }
 
-// -------------------- Wait for DOM ready, then attach events --------------------
+// -------------------- Event listeners --------------------
 document.addEventListener("DOMContentLoaded", function () {
   console.log("✅ DOM ready – attaching events");
+
+  // Converter events
   convertBtn.addEventListener("click", convert);
   resetBtn.addEventListener("click", resetForm);
   clearHistoryBtn.addEventListener("click", clearHistory);
@@ -154,5 +269,19 @@ document.addEventListener("DOMContentLoaded", function () {
     if (e.key === "Enter") convert();
   });
 
+  // Preset buttons
+  document.querySelectorAll(".preset-btn").forEach((btn) => {
+    btn.addEventListener("click", function () {
+      const weight = this.dataset.weight;
+      const from = this.dataset.from;
+      const to = this.dataset.to;
+      weightInput.value = weight;
+      fromUnit.value = from;
+      toUnit.value = to;
+      convert(); // trigger conversion
+    });
+  });
+
+  // Load initial data
   loadHistory();
 });
