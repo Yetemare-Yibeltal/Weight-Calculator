@@ -72,6 +72,8 @@ async function loadHistory() {
 
 // -------------------- Conversion logic (with animation) --------------------
 async function convert() {
+  console.log("🔄 Convert button clicked!"); // Debug line
+
   const rawWeight = weightInput.value.trim();
   if (rawWeight === "") {
     resultDisplay.textContent = "Please enter a weight";
@@ -124,7 +126,7 @@ function resetForm() {
   fromUnit.value = "kg";
   toUnit.value = "lbs";
   resultDisplay.textContent = "";
-  resultDisplay.className = "result"; // remove show and unit class
+  resultDisplay.className = "result";
   weightInput.focus();
 }
 
@@ -141,14 +143,16 @@ async function clearHistory() {
   }
 }
 
-// -------------------- Event listeners --------------------
-convertBtn.addEventListener("click", convert);
-resetBtn.addEventListener("click", resetForm);
-clearHistoryBtn.addEventListener("click", clearHistory);
+// -------------------- Wait for DOM ready, then attach events --------------------
+document.addEventListener("DOMContentLoaded", function () {
+  console.log("✅ DOM ready – attaching events");
+  convertBtn.addEventListener("click", convert);
+  resetBtn.addEventListener("click", resetForm);
+  clearHistoryBtn.addEventListener("click", clearHistory);
 
-weightInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") convert();
+  weightInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") convert();
+  });
+
+  loadHistory();
 });
-
-// Initial load
-loadHistory();
