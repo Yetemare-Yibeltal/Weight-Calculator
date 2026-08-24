@@ -1,0 +1,208 @@
+/* -------------------- reset & base -------------------- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: linear-gradient(145deg, #1a1e2b 0%, #2d3349 100%);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem;
+  color: #e8edf5;
+}
+
+.container {
+  max-width: 600px;
+  width: 100%;
+}
+
+/* -------------------- cards & glassmorphism -------------------- */
+.card,
+.history-card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 2rem;
+  padding: 2rem 1.8rem;
+  margin-bottom: 1.8rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  transition: transform 0.2s ease;
+}
+
+.card:hover,
+.history-card:hover {
+  transform: translateY(-2px);
+}
+
+h1 {
+  font-weight: 300;
+  font-size: 2.2rem;
+  letter-spacing: 1px;
+  margin-bottom: 1.2rem;
+  text-align: center;
+  background: linear-gradient(135deg, #f0c27f, #fc5c7d);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* -------------------- form elements -------------------- */
+.input-group {
+  margin-bottom: 1.2rem;
+}
+
+label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  margin-bottom: 0.3rem;
+  color: #c8d0e0;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: none;
+  border-radius: 1.2rem;
+  background: rgba(255, 255, 255, 0.07);
+  color: #e8edf5;
+  font-size: 1rem;
+  outline: 1px solid rgba(255, 255, 255, 0.1);
+  transition: outline 0.2s, background 0.2s;
+}
+
+input:focus,
+select:focus {
+  outline: 2px solid #fc5c7d;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+input::placeholder {
+  color: #8f99b0;
+}
+
+select option {
+  background: #2d3349;
+  color: #e8edf5;
+}
+
+/* -------------------- buttons -------------------- */
+button {
+  width: 100%;
+  padding: 0.9rem;
+  border: none;
+  border-radius: 1.5rem;
+  background: linear-gradient(135deg, #fc5c7d, #f0c27f);
+  color: #1a1e2b;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.2s;
+  margin-top: 0.4rem;
+}
+
+button:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 20px rgba(252, 92, 125, 0.4);
+}
+
+button.secondary {
+  background: rgba(255, 255, 255, 0.08);
+  color: #e8edf5;
+  margin-top: 0.8rem;
+}
+
+button.secondary:hover {
+  background: rgba(255, 255, 255, 0.16);
+  box-shadow: none;
+}
+
+button.danger {
+  background: rgba(255, 70, 70, 0.25);
+  color: #ff7a7a;
+  width: auto;
+  padding: 0.4rem 1.2rem;
+  border-radius: 1.5rem;
+  font-size: 0.85rem;
+  margin-top: 0;
+}
+
+button.danger:hover {
+  background: rgba(255, 70, 70, 0.4);
+}
+
+/* -------------------- result -------------------- */
+.result {
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 1.2rem 0 0.4rem;
+  min-height: 3.5rem;
+  color: #f0c27f;
+  word-break: break-word;
+}
+
+/* -------------------- history -------------------- */
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.history-header h2 {
+  font-weight: 400;
+  font-size: 1.4rem;
+}
+
+#history-list {
+  list-style: none;
+  max-height: 180px;
+  overflow-y: auto;
+  padding-right: 0.3rem;
+}
+
+#history-list li {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 1rem;
+  padding: 0.6rem 1rem;
+  margin-bottom: 0.4rem;
+  font-size: 0.95rem;
+  display: flex;
+  justify-content: space-between;
+  border-left: 3px solid #fc5c7d;
+  transition: background 0.2s;
+}
+
+#history-list li:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.empty-history {
+  color: #8f99b0;
+  font-style: italic;
+  text-align: center;
+  padding: 1.2rem 0;
+}
+
+/* -------------------- responsive -------------------- */
+@media (max-width: 480px) {
+  .card,
+  .history-card {
+    padding: 1.5rem 1.2rem;
+  }
+  h1 {
+    font-size: 1.7rem;
+  }
+  .result {
+    font-size: 1.4rem;
+  }
+}
