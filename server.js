@@ -84,3 +84,6 @@ app.get("*", (req, res) => {
 app.listen(PORT, () => {
   console.log(`⚖️  Weight Lab server running on port ${PORT}`);
 });
+app.get("/test", (req, res) => {
+  res.send("Server is working!");
+});
