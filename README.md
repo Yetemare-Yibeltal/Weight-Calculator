@@ -1,23 +1,27 @@
-# Weight Calculator
+# ⚖️ Weight Calculator – Fullstack Edition
 
-A clean, responsive weight‑conversion tool built with vanilla HTML, CSS, and JavaScript.  
-Convert between kilograms, grams, pounds, ounces, and stones.  
-Includes a conversion history and a modern dark glassmorphism UI.
+A modern weight conversion tool with a pure HTML/CSS/JS frontend and a Node.js + Express + SQLite backend.  
+Conversion history is stored in a database and shared across sessions.
 
 ## Features
 
-- Real‑time conversion with unit selection
-- Conversion history stored in your browser
-- Responsive for desktop and mobile
-- Reset and clear history buttons
+- Real‑time conversion with unit selection (kg, g, lbs, oz, stones)
+- Conversion history persisted in a SQLite database
+- RESTful API backend
+- Clear history (with confirmation)
+- Responsive dark glassmorphism UI
 
-## How to use
+## Tech Stack
 
-1. Enter a numeric weight.
-2. Choose the source unit and target unit.
-3. Click **Convert** or press Enter.
-4. View the result and your past conversions below.
+- **Frontend**: Vanilla HTML, CSS, JavaScript
+- **Backend**: Node.js, Express
+- **Database**: SQLite3
+- **Dev tools**: Nodemon
 
-## Live demo
+## How to run locally
 
-(Add your GitHub Pages link here when deployed)
+1. Clone the repo
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
