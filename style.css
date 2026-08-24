@@ -114,10 +114,26 @@ body {
   font-size: 0.95rem;
   font-weight: 500;
   transition: color 0.2s;
+  position: relative;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #f9d976, #fc5c7d);
+  transition: width 0.3s;
 }
 
 .nav-links a:hover {
   color: #f9d976;
+}
+
+.nav-links a:hover::after {
+  width: 100%;
 }
 
 @media (max-width: 600px) {
@@ -211,13 +227,15 @@ body {
   border-radius: 1.5rem;
   padding: 2rem 1.2rem;
   border: 1px solid rgba(255, 255, 255, 0.05);
-  transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+  transition: background 0.3s, transform 0.2s, box-shadow 0.3s,
+    border-color 0.3s;
 }
 
 .feature-card:hover {
   background: rgba(255, 255, 255, 0.07);
-  transform: translateY(-6px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+  border-color: rgba(249, 217, 118, 0.15);
 }
 
 .feature-icon {
@@ -250,12 +268,13 @@ body {
   border-radius: 1.5rem;
   padding: 1.5rem;
   border: 1px solid rgba(255, 255, 255, 0.05);
-  transition: background 0.3s, transform 0.2s;
+  transition: background 0.3s, transform 0.2s, border-color 0.3s;
 }
 
 .step:hover {
   background: rgba(255, 255, 255, 0.06);
   transform: scale(1.02);
+  border-color: rgba(249, 217, 118, 0.2);
 }
 
 .step-number {
@@ -321,8 +340,8 @@ body {
 
 .card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.5);
-  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(249, 217, 118, 0.05);
+  border-color: rgba(249, 217, 118, 0.2);
 }
 
 .card-header {
@@ -376,6 +395,11 @@ select {
   transition: outline 0.2s, background 0.2s, box-shadow 0.2s;
 }
 
+input:hover,
+select:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
 input:focus,
 select:focus {
   outline: 2px solid #f9d976;
@@ -420,7 +444,7 @@ button:active {
 
 .btn-primary:hover {
   transform: scale(1.02);
-  box-shadow: 0 8px 35px rgba(252, 92, 125, 0.4);
+  box-shadow: 0 8px 35px rgba(252, 92, 125, 0.5);
 }
 
 .btn-secondary {
@@ -430,7 +454,7 @@ button:active {
 }
 
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.16);
   transform: scale(1.02);
 }
 
@@ -446,7 +470,7 @@ button:active {
 }
 
 .btn-danger:hover {
-  background: rgba(239, 68, 68, 0.25);
+  background: rgba(239, 68, 68, 0.3);
 }
 
 /* ===== PRESETS ===== */
@@ -481,8 +505,8 @@ button:active {
 }
 
 .preset-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.14);
+  transform: scale(1.08);
 }
 
 /* ===== RESULT ===== */
@@ -501,6 +525,11 @@ button:active {
 .result.show {
   opacity: 1;
   transform: translateY(0);
+}
+
+.result.show:hover {
+  transform: scale(1.02);
+  transition: transform 0.2s;
 }
 
 .result.kg {
@@ -540,13 +569,14 @@ button:active {
   justify-content: space-between;
   align-items: center;
   border-left: 4px solid #f9d976;
-  transition: background 0.2s, transform 0.15s;
+  transition: background 0.2s, transform 0.15s, border-left-color 0.2s;
   animation: slideIn 0.25s ease;
 }
 
 .history-list li:hover {
-  background: rgba(255, 255, 255, 0.07);
-  transform: translateX(4px);
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateX(6px);
+  border-left-color: #fc5c7d;
 }
 
 @keyframes slideIn {
@@ -589,12 +619,13 @@ button:active {
   background: rgba(255, 255, 255, 0.03);
   padding: 0.8rem 0.3rem;
   border-radius: 1.2rem;
-  transition: background 0.2s, transform 0.15s;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
 }
 
 .stat-item:hover {
   background: rgba(255, 255, 255, 0.07);
-  transform: scale(1.03);
+  transform: scale(1.06);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .stat-value {
@@ -629,23 +660,75 @@ button:active {
   padding: 0.3rem;
 }
 
-/* ===== FOOTER ===== */
+/* ===== FOOTER (Standard 3‑Column) ===== */
 footer {
-  padding: 2rem 0;
-  text-align: center;
+  padding: 2.5rem 0 1.5rem;
   border-top: 1px solid rgba(255, 255, 255, 0.05);
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.3);
   margin-top: auto;
   width: 100%;
 }
 
-.footer-name {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #eef2f8;
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr;
+  gap: 2rem;
+  align-items: start;
 }
 
-.footer-name strong {
+@media (max-width: 700px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    text-align: center;
+  }
+}
+
+.footer-brand .logo {
+  font-size: 1.4rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #f9d976, #fc5c7d);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.footer-desc {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.9rem;
+  margin-top: 0.3rem;
+}
+
+.footer-links h4,
+.footer-meta h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #eef2f8;
+  margin-bottom: 0.6rem;
+}
+
+.footer-links ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-links ul li {
+  margin-bottom: 0.3rem;
+}
+
+.footer-links ul li a {
+  color: rgba(255, 255, 255, 0.4);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s, padding-left 0.2s;
+}
+
+.footer-links ul li a:hover {
+  color: #f9d976;
+  padding-left: 4px;
+}
+
+.footer-meta strong {
   background: linear-gradient(135deg, #f9d976, #fc5c7d);
   -webkit-background-clip: text;
   background-clip: text;
@@ -656,7 +739,6 @@ footer {
   font-size: 0.85rem;
   color: rgba(255, 255, 255, 0.2);
   margin-top: 0.2rem;
-  font-weight: 400;
 }
 
 .footer-copy {
