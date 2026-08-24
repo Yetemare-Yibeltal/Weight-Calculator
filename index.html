@@ -3,19 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Weight Lab · Fullstack Portfolio</title>
+  <title>Weight Lab · Fullstack</title>
   <link rel="stylesheet" href="style.css" />
-  <!-- Chart.js for the chart -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-  <!-- ========== ANIMATED BACKGROUND ========== -->
+  <!-- ===== BACKGROUND ===== -->
   <div class="bg-animation"></div>
 
-  <!-- ========== NAVIGATION ========== -->
+  <!-- ===== NAV ===== -->
   <nav class="navbar">
-    <div class="nav-container">
+    <div class="container nav-container">
       <span class="logo">⚖️ Weight Lab</span>
       <ul class="nav-links">
         <li><a href="#features">Features</a></li>
@@ -26,75 +25,51 @@
     </div>
   </nav>
 
-  <!-- ========== HERO SECTION ========== -->
-  <section class="hero" id="home">
-    <div class="hero-content">
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="container hero-content">
       <h1>Convert, Track, Analyze</h1>
-      <p class="hero-sub">
-        A full‑stack weight conversion tool with live analytics, history, and beautiful visuals.
-        Built with Node.js, Express, SQLite, and vanilla frontend.
-      </p>
-      <a href="#calculator" class="btn-primary hero-btn">Try the Converter ↓</a>
+      <p class="hero-sub">Full‑stack weight conversion with live analytics &amp; persistent history.</p>
+      <a href="#calculator" class="btn-primary hero-btn">Launch Converter ↓</a>
     </div>
   </section>
 
-  <!-- ========== FEATURES SECTION ========== -->
+  <!-- ===== FEATURES ===== -->
   <section class="features" id="features">
-    <h2>Why Weight Lab?</h2>
-    <div class="feature-grid">
-      <div class="feature-card">
-        <span class="feature-icon">⚡</span>
-        <h3>Instant Conversion</h3>
-        <p>Real‑time results with a clean, responsive interface – no page reloads.</p>
-      </div>
-      <div class="feature-card">
-        <span class="feature-icon">📊</span>
-        <h3>Analytics Dashboard</h3>
-        <p>See your most used units, total conversions, and a bar chart of activity.</p>
-      </div>
-      <div class="feature-card">
-        <span class="feature-icon">🗄️</span>
-        <h3>Persistent History</h3>
-        <p>All conversions are saved in a SQLite database – your data stays across sessions.</p>
-      </div>
-      <div class="feature-card">
-        <span class="feature-icon">🎨</span>
-        <h3>Modern UI/UX</h3>
-        <p>Glassmorphism, animated gradients, and smooth micro‑interactions for a premium feel.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== HOW IT WORKS ========== -->
-  <section class="how-it-works">
-    <h2>How It Works</h2>
-    <div class="steps">
-      <div class="step">
-        <span class="step-number">1</span>
-        <p>Enter a weight and choose your units.</p>
-      </div>
-      <div class="step">
-        <span class="step-number">2</span>
-        <p>Click “Convert” or press Enter – get your result instantly.</p>
-      </div>
-      <div class="step">
-        <span class="step-number">3</span>
-        <p>Every conversion is saved to the database and shown in your history.</p>
-      </div>
-      <div class="step">
-        <span class="step-number">4</span>
-        <p>Explore your stats and chart to understand your usage patterns.</p>
+    <div class="container">
+      <h2>Why Weight Lab?</h2>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <span class="feature-icon">⚡</span>
+          <h3>Instant Conversion</h3>
+          <p>Real‑time results with a clean, responsive interface.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">📊</span>
+          <h3>Analytics Dashboard</h3>
+          <p>See your most used units and conversion frequency chart.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">🗄️</span>
+          <h3>Persistent History</h3>
+          <p>All conversions saved in a SQLite database.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">🎨</span>
+          <h3>Modern UI/UX</h3>
+          <p>Glassmorphism, subtle animations, and a premium feel.</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ========== MAIN DASHBOARD (Calculator, Stats, Chart, History) ========== -->
+  <!-- ===== DASHBOARD ===== -->
   <section class="dashboard-section" id="calculator">
-    <div class="dashboard-container">
+    <div class="container dashboard-container">
 
-      <!-- LEFT COLUMN: Converter + History -->
+      <!-- LEFT COLUMN -->
       <div class="main-column">
-        <!-- Converter Card -->
+        <!-- Converter -->
         <div class="card converter-card">
           <div class="card-header">
             <span class="card-icon">🔄</span>
@@ -129,7 +104,6 @@
             </div>
           </div>
 
-          <!-- Quick Presets -->
           <div class="presets">
             <span class="preset-label">⚡ Quick:</span>
             <button class="preset-btn" data-weight="1" data-from="kg" data-to="lbs">1 kg → lbs</button>
@@ -144,7 +118,7 @@
           <div id="result" class="result"></div>
         </div>
 
-        <!-- History Card -->
+        <!-- History -->
         <div class="card history-card" id="history">
           <div class="card-header">
             <span class="card-icon">📋</span>
@@ -157,9 +131,9 @@
         </div>
       </div>
 
-      <!-- RIGHT COLUMN: Stats + Chart -->
+      <!-- RIGHT COLUMN -->
       <div class="side-column" id="stats">
-        <!-- Stats Card -->
+        <!-- Stats -->
         <div class="card stats-card">
           <div class="card-header">
             <span class="card-icon">📊</span>
@@ -181,7 +155,7 @@
           </div>
         </div>
 
-        <!-- Chart Card -->
+        <!-- Chart -->
         <div class="card chart-card">
           <div class="card-header">
             <span class="card-icon">📈</span>
@@ -194,10 +168,12 @@
     </div>
   </section>
 
-  <!-- ========== FOOTER ========== -->
+  <!-- ===== FOOTER ===== -->
   <footer>
-    <p>Built with ❤️ · Fullstack Weight Lab</p>
-    <p class="footer-tech">Node.js · Express · SQLite · Vanilla JS</p>
+    <div class="container">
+      <p>Built with ❤️ · Fullstack Weight Lab</p>
+      <p class="footer-tech">Node.js · Express · SQLite · Vanilla JS</p>
+    </div>
   </footer>
 
   <script src="script.js"></script>
