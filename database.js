@@ -61,11 +61,11 @@ async function deleteAllConversions() {
   await collection.deleteMany({});
   return { success: true };
 }
-
 async function checkConnection() {
-  const collection = await getCollection();
-  await collection.database.command({ ping: 1 });
+  await getCollection();
+  await client.db(databaseName).command({ ping: 1 });
 }
+
 
 module.exports = {
   getConversions,
