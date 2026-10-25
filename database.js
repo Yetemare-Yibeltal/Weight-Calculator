@@ -1,59 +1,70 @@
-// database.js
-const sqlite3 = require("sqlite3").verbose();
-const path = require("path");
+const { MongoClient, ObjectId } = require("mongodb");
 
-const dbPath = path.resolve(__dirname, "weight.db");
-const db = new sqlite3.Database(dbPath);
+const client = new MongoClient(process.env.MONGODB_URI || "");
+const databaseName = process.env.MONGODB_DB_NAME || "weight_calculator";
 
-// Initialize the table
-db.run(`
-  CREATE TABLE IF NOT EXISTS conversions (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    weight REAL NOT NULL,
-    fromUnit TEXT NOT NULL,
-    toUnit TEXT NOT NULL,
-    result REAL NOT NULL,
-    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-  )
-`);
+let connection;
 
-// Helper to run queries with promises
-function runQuery(sql, params = []) {
-  return new Promise((resolve, reject) => {
-    db.run(sql, params, function (err) {
-      if (err) reject(err);
-      else resolve({ id: this.lastID, changes: this.changes });
+async function getCollection() {
+  if (!process.env.MONGODB_URI) {
+    throw new Error("MONGODB_URI environment variable is missing");
+  }
+
+  if (!connection) {
+    connection = client.connect().catch((error) => {
+      connection = null;
+      throw error;
     });
-  });
+  }
+
+  await connection;
+  return client.db(databaseName).collection("conversions");
 }
 
-function getAll(sql, params = []) {
-  return new Promise((resolve, reject) => {
-    db.all(sql, params, (err, rows) => {
-      if (err) reject(err);
-      else resolve(rows);
-    });
-  });
+async function getConversions() {
+  const collection = await getCollection();
+  return collection.find({}).sort({ timestamp: -1 }).toArray();
 }
 
-// --- CRUD Functions ---
-function getConversions() {
-  return getAll("SELECT * FROM conversions ORDER BY timestamp DESC");
+async function createConversion({ weight, fromUnit, toUnit, result }) {
+  const collection = await getCollection();
+
+  const document = {
+    weight: Number(weight),
+    fromUnit,
+    toUnit,
+    result: Number(result),
+    timestamp: new Date()
+  };
+
+  const saved = await collection.insertOne(document);
+  return { id: saved.insertedId.toString() };
 }
 
-function createConversion({ weight, fromUnit, toUnit, result }) {
-  return runQuery(
-    "INSERT INTO conversions (weight, fromUnit, toUnit, result) VALUES (?, ?, ?, ?)",
-    [weight, fromUnit, toUnit, result],
-  );
+async function deleteConversion(id) {
+  if (!ObjectId.isValid(id)) {
+    throw new Error("Invalid conversion ID");
+  }
+
+  const collection = await getCollection();
+  const deleted = await collection.deleteOne({ _id: new ObjectId(id) });
+
+  if (!deleted.deletedCount) {
+    throw new Error("Conversion not found");
+  }
+
+  return { success: true };
 }
 
-function deleteConversion(id) {
-  return runQuery("DELETE FROM conversions WHERE id = ?", [id]);
+async function deleteAllConversions() {
+  const collection = await getCollection();
+  await collection.deleteMany({});
+  return { success: true };
 }
 
-function deleteAllConversions() {
-  return runQuery("DELETE FROM conversions");
+async function checkConnection() {
+  const collection = await getCollection();
+  await collection.database.command({ ping: 1 });
 }
 
 module.exports = {
@@ -61,4 +72,5 @@ module.exports = {
   createConversion,
   deleteConversion,
   deleteAllConversions,
+  checkConnection
 };

@@ -1,7 +1,7 @@
 # OS junk
 .DS_Store
 Thumbs.db
-
+.node_modules
 # Editor files
 .vscode/
 .idea/
