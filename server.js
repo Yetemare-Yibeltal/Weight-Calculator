@@ -104,6 +104,13 @@ app.use((req, res, next) => {
   });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`Weight Calculator running on port ${PORT}`);
+
+  try {
+    await db.checkConnection();
+    console.log("MongoDB connected successfully");
+  } catch (error) {
+    console.error("MongoDB connection failed:", error.message);
+  } 
 });
