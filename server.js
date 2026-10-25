@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const db = require("./database");
@@ -14,13 +15,13 @@ app.get("/api/health", async (req, res) => {
     res.json({
       status: "ok",
       database: "connected",
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   } catch (error) {
     console.error("Database health check failed:", error.message);
     res.status(503).json({
       status: "error",
-      database: "disconnected"
+      database: "disconnected",
     });
   }
 });
@@ -57,7 +58,7 @@ app.post("/api/conversions", async (req, res) => {
       weight,
       fromUnit,
       toUnit,
-      result
+      result,
     });
 
     res.status(201).json(saved);
@@ -76,7 +77,8 @@ app.delete("/api/conversions/:id", async (req, res) => {
     const missing = error.message === "Conversion not found";
 
     res.status(invalidId ? 400 : missing ? 404 : 500).json({
-      error: invalidId || missing ? error.message : "Could not delete conversion"
+      error:
+        invalidId || missing ? error.message : "Could not delete conversion",
     });
   }
 });

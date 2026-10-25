@@ -5,6 +5,6 @@ Thumbs.db
 # Editor files
 .vscode/
 .idea/
-
+.env
 # Logs
 *.log.env
